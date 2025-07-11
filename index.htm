@@ -1,53 +1,87 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Крута штука</title>
-    <style>
-        body{
-            background:#000;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            margin:0;
-        }
-        #scare{
-            display:none;
-            position:fixed;
-            top:50%;left:50%;
-            transform:translate(-50%,-50%);
-        }
-        button{
-            padding:10px 20px;
-            font-size:18px;
-            cursor:pointer;
-            background:#fff;
-            border:none;
-            border-radius:5px;
-        }
-        button:hover{background:#ddd;}
-    </style>
+  <title>Скріммер</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #scare {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      animation: shake 0.5s infinite, flash 0.2s infinite alternate;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(-50%, -50%) rotate(1deg); }
+      25% { transform: translate(-50%, -50%) rotate(-1deg); }
+      50% { transform: translate(-50%, -50%) rotate(1deg); }
+      75% { transform: translate(-50%, -50%) rotate(-1deg); }
+      100% { transform: translate(-50%, -50%) rotate(1deg); }
+    }
+
+    @keyframes flash {
+      from { opacity: 1; }
+      to { opacity: 0.6; }
+    }
+
+    .blood-bg {
+      background: url("https://i.ibb.co/t3K0m4W/blood-background.jpg") no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    h1 {
+      font-size: 2em;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #ccc;
+    }
+  </style>
 </head>
 <body>
-    <h1 style="color:white;">Натисни кнопку, щоб почати...</h1>
-    <button onclick="showScare()">Почати</button>
+  <h1>Готуйся... 😈</h1>
+  <button onclick="startScare()">Почати</button>
+  <img id="scare" src="https://i.pinimg.com/564x/c3/fe/8a/c3fe8a0d6bcbcdeeb4d310e4f5e598e4.jpg" width="500" alt="Scare">
+  <audio id="scream" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3" preload="auto" loop></audio>
 
-    <!-- Зображення-скрімер -->
-    <img id="scare"
-         src="https://i.pinimg.com/564x/c3/fe/8a/c3fe8a0d6bcbcdeeb4d310e4f5e598e4.jpg"
-         alt="Scare" width="500">
+  <script>
+    function startScare() {
+      document.querySelector("h1").style.display = "none";
+      document.querySelector("button").style.display = "none";
 
-    <!-- Новий звук крику -->
-<audio id="scream" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3" preload="auto"></audio>
+      setTimeout(() => {
+        document.body.classList.add("blood-bg");
+        document.getElementById("scare").style.display = "block";
+        document.getElementById("scream").play();
 
-    <script>
-        function showScare(){
-            document.getElementById('scare').style.display='block';
-            document.getElementById('scream').play();
-            document.querySelector('h1').style.display='none';
-            document.querySelector('button').style.display='none';
+        // Вібрація телефону (якщо підтримується)
+        if (navigator.vibrate) {
+          navigator.vibrate([200, 100, 200, 100, 500]);
         }
-    </script>
+      }, 3000); // Через 3 секунди
+    }
+  </script>
 </body>
 </html>
