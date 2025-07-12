@@ -1,77 +1,118 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8" />
-<title>😈</title>
-<style>
-  html,body{
-    margin:0;padding:0;background:#000;height:100vh;overflow:hidden;
-    display:flex;justify-content:center;align-items:center;cursor:none
-  }
-  .full{
-    position:fixed;inset:0;width:100vw;height:100vh;
-    object-fit:cover;display:none
-  }
-  #scare{
-    animation:shake .08s infinite
-  }
-  @keyframes shake{
-     0%{transform:scale(1.03) rotate(1deg)}
-    50%{transform:scale(1.06) rotate(-1deg)}
-   100%{transform:scale(1.04) rotate(.4deg)}
-  }
-  #overlay{
-    position:fixed;inset:0;display:flex;justify-content:center;align-items:center;
-    background:rgba(0,0,0,.85);color:#fff;font:700 28px/1.3 sans-serif;z-index:20
-  }
-  #text{
-    position:fixed;top:30%;width:100%;text-align:center;
-    font:700 26px/1.3 sans-serif;color:#fff;z-index:10;display:none
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>Дзеркало</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: black;
+      overflow: hidden;
+      cursor: none;
+    }
+    #face, #scare {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      transform: translate(-50%, -50%);
+      display: none;
+    }
+    #eye {
+      position: absolute;
+      top: 45%;
+      left: 47%;
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 50%;
+      z-index: 2;
+      display: none;
+    }
+    #pupil {
+      width: 20px;
+      height: 20px;
+      background: black;
+      border-radius: 50%;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 24px;
+      font-family: sans-serif;
+      z-index: 10;
+    }
+    @keyframes shake {
+      0% { transform: scale(1.02) rotate(1deg); }
+      50% { transform: scale(1.05) rotate(-1deg); }
+      100% { transform: scale(1.03) rotate(0.5deg); }
+    }
+    .shake {
+      animation: shake 0.08s infinite;
+    }
+  </style>
 </head>
 <body>
-  <!-- обов’язковий дотик -->
-  <div id="overlay">📱 силка на Spotify (мій плейлист)</div>
+  <div id="overlay">📱 Торкнись, щоб активувати дзеркало</div>
 
-  <!-- дивна картинка -->
-  <img id="weird" class="full" src="https://i.ibb.co/hK7gqV0/weird.png" alt="weird" />
-  <!-- напис на дивній картинці -->
-  <div id="text">Що це за символ?..</div>
+  <img id="face" src="https://wallpapers.com/images/hd/scary-face-pictures-fvx05bim45ctjiwh.jpg" alt="face">
+  <img id="scare" src="https://media.tenor.com/FlrQo24znqEAAAAM/no-sleep-scary.gif" alt="scare">
+  
+  <div id="eye"><div id="pupil"></div></div>
 
-  <!-- скрімер‑GIF -->
-  <img id="scare" class="full" src="https://media.tenor.com/FlrQo24znqEAAAAM/no-sleep-scary.gif" alt="scare" />
-
-  <!-- новий звук -->
   <audio id="scream" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3" preload="auto"></audio>
 
-<script>
-  const ovr = document.getElementById('overlay'),
-        weird = document.getElementById('weird'),
-        scare = document.getElementById('scare'),
-        text = document.getElementById('text'),
-        scream = document.getElementById('scream');
+  <script>
+    const overlay = document.getElementById('overlay');
+    const face = document.getElementById('face');
+    const scare = document.getElementById('scare');
+    const eye = document.getElementById('eye');
+    const pupil = document.getElementById('pupil');
+    const scream = document.getElementById('scream');
 
-  ovr.addEventListener('click', () => {
-    ovr.remove();
+    // запуск після торкання
+    overlay.addEventListener('click', () => {
+      overlay.remove();
+      face.style.display = 'block';
+      eye.style.display = 'block';
 
-    setTimeout(() => {
-      weird.style.display = 'block';
-      text.style.display = 'block';
+      // рух зіницями
+      document.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth * 30 - 15;
+        const y = e.clientY / window.innerHeight * 30 - 15;
+        pupil.style.transform = `translate(${x}px, ${y}px)`;
+      });
 
+      document.addEventListener('touchmove', (e) => {
+        const touch = e.touches[0];
+        const x = touch.clientX / window.innerWidth * 30 - 15;
+        const y = touch.clientY / window.innerHeight * 30 - 15;
+        pupil.style.transform = `translate(${x}px, ${y}px)`;
+      });
+
+      // після 5 секунд — скрімер
       setTimeout(() => {
-        weird.style.display = 'none';
-        text.style.display = 'none';
+        face.style.display = 'none';
+        eye.style.display = 'none';
         scare.style.display = 'block';
+        scare.classList.add('shake');
         document.body.style.background = 'red';
         scream.play().catch(() => {});
-        if (navigator.vibrate) {
-          navigator.vibrate([400, 150, 700]);
-        }
-      }, 1000);
-
-    }, 3000);
-  }, { once: true });
-</script>
+        if (navigator.vibrate) navigator.vibrate([400, 150, 700]);
+      }, 5000);
+    }, { once: true });
+  </script>
 </body>
 </html>
