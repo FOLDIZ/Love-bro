@@ -2,55 +2,83 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>🤖</title>
+  <title>😈</title>
   <style>
-    html,body{
-      margin:0;padding:0;background:#000;height:100vh;overflow:hidden;
-      display:flex;justify-content:center;align-items:center;cursor:none;
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: none;
     }
-    #overlay{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;
-      color:#fff;font:700 28px/1.2 'Arial Black',sans-serif;background:#000;z-index:50;}
-    img{max-width:100%;max-height:100%;display:none}
-    #scare{animation:shake .08s infinite}
-    @keyframes shake{
-      0%{transform:scale(1.03)rotate(.8deg)}
-      50%{transform:scale(1.06)rotate(-.8deg)}
-      100%{transform:scale(1.04)rotate(.6deg)}
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      display: none;
+    }
+
+    #scare {
+      animation: shake 0.08s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: scale(1.03) rotate(1deg); }
+      50% { transform: scale(1.06) rotate(-1deg); }
+      100% { transform: scale(1.04) rotate(0.5deg); }
+    }
+
+    #overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font: 700 28px/1.2 sans-serif;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 5;
     }
   </style>
 </head>
 <body>
-  <!-- стартовий тап -->
-  <div id="overlay">Торкнись, щоб завантажити…</div>
+  <!-- Початковий клік для звуку -->
+  <div id="overlay">Торкнись, щоб почати...</div>
 
-  <!-- «дивна» картинка -->
+  <!-- Крипова “приманка”-картинка -->
   <img id="weird" src="https://i.ibb.co/hK7gqV0/weird.png" alt="Страх">
 
-  <!-- власне скрімер -->
-  <img id="scare" src="https://i.pinimg.com/originals/17/d2/1d/17d21d3b5a231c7e7635086b2bc72be2.gif" alt="Скріммер">
+  <!-- Скріммер-графіка -->
+  <img id="scare" src="https://media.tenor.com/FlrQo24znqEAAAAM/no-sleep-scary.gif" alt="Скріммер">
 
-  <!-- крик -->
-  <audio id="scream" src="https://files.catbox.moe/lkd3o4.mp3" preload="auto"></audio>
+  <!-- Страшний звук -->
+  <audio id="scream" src="https://cdn.pixabay.com/audio/2022/03/09/audio_7d83d5bb69.mp3" preload="auto"></audio>
 
   <script>
     const overlay = document.getElementById('overlay');
-    const weird   = document.getElementById('weird');
-    const scare   = document.getElementById('scare');
-    const scream  = document.getElementById('scream');
+    const weird = document.getElementById('weird');
+    const scare = document.getElementById('scare');
+    const scream = document.getElementById('scream');
 
     overlay.addEventListener('click', () => {
-      overlay.style.display = 'none';         // прибираємо заставку
-      setTimeout(()=>{                        // 3 с до «дивної» картинки
-        weird.style.display='block';
-        setTimeout(()=>{                      // 1 с і БАХ
-          weird.style.display='none';
-          scare.style.display='block';
-          document.body.style.background='red';
-          scream.play().catch(()=>{});        // запускаємо крик
-          if(navigator.vibrate){navigator.vibrate([300,100,700]);}
-        },1000);
-      },3000);
-    },{once:true});
+      overlay.style.display = 'none'; // прибираємо заставку
+      setTimeout(() => {
+        weird.style.display = 'block'; // дивна картинка
+
+        setTimeout(() => {
+          weird.style.display = 'none';
+          scare.style.display = 'block';
+          document.body.style.background = 'red';
+          scream.play().catch(() => {});
+          if (navigator.vibrate) navigator.vibrate([400, 150, 700]);
+        }, 1000); // через 1 сек — скрімер
+
+      }, 3000); // через 3 секунди — дивна картинка
+    }, { once: true });
   </script>
 </body>
 </html>
