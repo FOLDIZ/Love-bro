@@ -1,70 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
-  <title>Завантаження...</title>
+  <meta charset="UTF-8">
+  <title>🤖</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: none;
+    html,body{
+      margin:0;padding:0;background:#000;height:100vh;overflow:hidden;
+      display:flex;justify-content:center;align-items:center;cursor:none;
     }
-
-    img {
-      max-width: 100%;
-      max-height: 100%;
-      display: none;
-    }
-
-    #scare {
-      animation: shake 0.1s infinite;
-    }
-
-    @keyframes shake {
-      0% { transform: scale(1.03) rotate(1deg); }
-      25% { transform: scale(1.04) rotate(-1deg); }
-      50% { transform: scale(1.05) rotate(1deg); }
-      75% { transform: scale(1.04) rotate(-1deg); }
-      100% { transform: scale(1.05) rotate(0deg); }
+    #overlay{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;
+      color:#fff;font:700 28px/1.2 'Arial Black',sans-serif;background:#000;z-index:50;}
+    img{max-width:100%;max-height:100%;display:none}
+    #scare{animation:shake .08s infinite}
+    @keyframes shake{
+      0%{transform:scale(1.03)rotate(.8deg)}
+      50%{transform:scale(1.06)rotate(-.8deg)}
+      100%{transform:scale(1.04)rotate(.6deg)}
     }
   </style>
 </head>
 <body>
+  <!-- стартовий тап -->
+  <div id="overlay">Торкнись, щоб завантажити…</div>
+
+  <!-- «дивна» картинка -->
   <img id="weird" src="https://i.ibb.co/hK7gqV0/weird.png" alt="Страх">
+
+  <!-- власне скрімер -->
   <img id="scare" src="https://i.pinimg.com/originals/17/d2/1d/17d21d3b5a231c7e7635086b2bc72be2.gif" alt="Скріммер">
+
+  <!-- крик -->
   <audio id="scream" src="https://files.catbox.moe/lkd3o4.mp3" preload="auto"></audio>
 
   <script>
-    // Очікування першого кліку для запуску аудіо на мобілках
-    document.addEventListener('click', () => {
-      const scream = document.getElementById('scream');
-      scream.play().catch(() => {});
-    }, { once: true });
+    const overlay = document.getElementById('overlay');
+    const weird   = document.getElementById('weird');
+    const scare   = document.getElementById('scare');
+    const scream  = document.getElementById('scream');
 
-    setTimeout(() => {
-      document.getElementById('weird').style.display = 'block';
-
-      setTimeout(() => {
-        document.getElementById('weird').style.display = 'none';
-        const scare = document.getElementById('scare');
-        scare.style.display = 'block';
-        scare.style.zIndex = '10';
-        scare.id = 'scare';
-        document.body.style.background = 'red';
-        document.getElementById('scream').play();
-
-        if (navigator.vibrate) {
-          navigator.vibrate([300, 100, 300, 100, 700]);
-        }
-
-      }, 1000); // через 1 секунду скрімер
-
-    }, 3000); // 3 секунди перед тривожною картинкою
+    overlay.addEventListener('click', () => {
+      overlay.style.display = 'none';         // прибираємо заставку
+      setTimeout(()=>{                        // 3 с до «дивної» картинки
+        weird.style.display='block';
+        setTimeout(()=>{                      // 1 с і БАХ
+          weird.style.display='none';
+          scare.style.display='block';
+          document.body.style.background='red';
+          scream.play().catch(()=>{});        // запускаємо крик
+          if(navigator.vibrate){navigator.vibrate([300,100,700]);}
+        },1000);
+      },3000);
+    },{once:true});
   </script>
 </body>
 </html>
