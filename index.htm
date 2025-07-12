@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Твій вибір</title>
   <style>
     html, body {
@@ -13,17 +13,19 @@
       display: flex; flex-direction: column;
       justify-content: center; align-items: center;
       text-align: center;
+      overflow: hidden;
     }
     .hidden { display: none; }
     button {
       background: #fff;
       color: #000;
       border: none;
-      padding: 12px 24px;
+      padding: 14px 28px;
       margin: 10px;
-      font-size: 18px;
+      font-size: 20px;
       cursor: pointer;
       border-radius: 6px;
+      min-width: 140px;
     }
     button:hover {
       background: #ddd;
@@ -32,10 +34,30 @@
       font-size: 28px;
       color: red;
       animation: flicker 1s infinite;
+      margin-top: 40px;
     }
     @keyframes flicker {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.3; }
+    }
+    #scare {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      display: none;
+      z-index: 10;
+    }
+    .shake {
+      animation: shake 0.1s infinite;
+    }
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(5px, -5px); }
+      50% { transform: translate(-5px, 5px); }
+      75% { transform: translate(5px, 5px); }
+      100% { transform: translate(-5px, -5px); }
     }
   </style>
 </head>
@@ -61,54 +83,42 @@
 
   <div id="finalStep" class="hidden">
     <p id="final">Ти зробив свій вибір, коли відкрив цей сайт...</p>
-    <audio id="boom" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3" preload="auto"></audio>
-    <script>
-      const sound = document.getElementById('boom');
-      setTimeout(() => {
-        sound.play().catch(()=>{});
-        document.body.style.background = 'red';
-        if (navigator.vibrate) navigator.vibrate([500, 300, 500]);
-      }, 2000);
-    </script>
   </div>
 
-  <script>
-    function nextStep(id) {
-      document.querySelectorAll('div').forEach(el => el.classList.add('hidden'));
-      document.getElementById(id).classList.remove('hidden');
+  <img id="scare" src="https://media.tenor.com/FlrQo24znqEAAAAM/no-sleep-scary.gif" alt="scare">
+
+  <audio id="boom" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3" preload="auto"></audio>
+
+<script>
+  const steps = ['step1', 'step2', 'step3', 'finalStep'];
+  const boomSound = document.getElementById('boom');
+  const scareImg = document.getElementById('scare');
+
+  function nextStep(id) {
+    // Сховати всі блоки
+    steps.forEach(s => {
+      document.getElementById(s).classList.add('hidden');
+    });
+    // Показати потрібний
+    document.getElementById(id).classList.remove('hidden');
+
+    if (id === 'finalStep') {
+      // Запуск фінальної сцени через 1 секунду
+      setTimeout(() => {
+        scareImg.style.display = 'block';
+        document.body.style.background = 'red';
+        document.body.classList.add('shake');
+        boomSound.play().catch(() => {});
+        if (navigator.vibrate) navigator.vibrate([400, 200, 700]);
+      }, 1000);
+    } else {
+      // При переході не до фіналу — прибираємо скрімер і ефекти
+      scareImg.style.display = 'none';
+      document.body.style.background = 'black';
+      document.body.classList.remove('shake');
     }
-  </script>
+  }
+</script>
+
 </body>
 </html>
-
-<div id="finalStep" class="hidden">
-  <img id="scare" src="https://media.tenor.com/FlrQo24znqEAAAAM/no-sleep-scary.gif" alt="scare" style="display:none; position:fixed; inset:0; width:100vw; height:100vh; object-fit:cover; z-index:10;">
-  <p id="finalText" style="display:none; position:fixed; bottom:10%; width:100%; text-align:center; color:red; font-size:28px; z-index:11; font-weight:bold;">Ти вже не можеш вийти...</p>
-  <audio id="boom" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3" preload="auto"></audio>
-  <script>
-    const sound = document.getElementById('boom');
-    const scare = document.getElementById('scare');
-    const finalText = document.getElementById('finalText');
-    setTimeout(() => {
-      document.body.style.background = 'black';
-      scare.style.display = 'block';
-      finalText.style.display = 'block';
-      document.body.classList.add('shake');
-      sound.play().catch(() => {});
-      if (navigator.vibrate) navigator.vibrate([400, 200, 700]);
-
-      // тряска ефект
-      document.body.style.animation = "shake 0.1s infinite";
-    }, 1000);
-  </script>
-</div>
-
-<style>
-  @keyframes shake {
-    0% { transform: translate(0px, 0px); }
-    25% { transform: translate(5px, -5px); }
-    50% { transform: translate(-5px, 5px); }
-    75% { transform: translate(5px, 5px); }
-    100% { transform: translate(-5px, -5px); }
-  }
-</style>
