@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Дзеркало</title>
   <style>
     html, body {
@@ -10,29 +11,32 @@
       height: 100vh;
       background: black;
       overflow: hidden;
-      cursor: none;
+      touch-action: none;
+      font-family: sans-serif;
     }
+
     #face, #scare {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 100vw;
-      height: 100vh;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      transform: translate(-50%, -50%);
       display: none;
     }
+
     #eye {
       position: absolute;
-      top: 45%;
-      left: 47%;
       width: 60px;
       height: 60px;
-      background: white;
       border-radius: 50%;
-      z-index: 2;
+      background: white;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       display: none;
+      z-index: 3;
     }
+
     #pupil {
       width: 20px;
       height: 20px;
@@ -42,34 +46,39 @@
       top: 20px;
       left: 20px;
     }
+
     #overlay {
-      position: fixed;
+      position: absolute;
       inset: 0;
       background: rgba(0, 0, 0, 0.85);
       display: flex;
       justify-content: center;
       align-items: center;
       color: white;
-      font-size: 24px;
-      font-family: sans-serif;
-      z-index: 10;
+      font-size: 22px;
+      z-index: 5;
+      text-align: center;
+      padding: 20px;
     }
+
+    .shake {
+      animation: shake 0.08s infinite;
+    }
+
     @keyframes shake {
       0% { transform: scale(1.02) rotate(1deg); }
       50% { transform: scale(1.05) rotate(-1deg); }
       100% { transform: scale(1.03) rotate(0.5deg); }
     }
-    .shake {
-      animation: shake 0.08s infinite;
-    }
   </style>
 </head>
 <body>
-  <div id="overlay">📱 Торкнись, щоб активувати дзеркало</div>
 
-  <img id="face" src="https://wallpapers.com/images/hd/scary-face-pictures-fvx05bim45ctjiwh.jpg" alt="face">
+  <div id="overlay">👆 Торкнись, щоб увімкнути дзеркало</div>
+
+  <img id="face" src="https://i.ibb.co/tYdfDpZ/creepy-face.jpg" alt="face">
   <img id="scare" src="https://media.tenor.com/FlrQo24znqEAAAAM/no-sleep-scary.gif" alt="scare">
-  
+
   <div id="eye"><div id="pupil"></div></div>
 
   <audio id="scream" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3" preload="auto"></audio>
@@ -82,27 +91,20 @@
     const pupil = document.getElementById('pupil');
     const scream = document.getElementById('scream');
 
-    // запуск після торкання
     overlay.addEventListener('click', () => {
       overlay.remove();
       face.style.display = 'block';
       eye.style.display = 'block';
 
-      // рух зіницями
-      document.addEventListener('mousemove', (e) => {
-        const x = e.clientX / window.innerWidth * 30 - 15;
-        const y = e.clientY / window.innerHeight * 30 - 15;
-        pupil.style.transform = `translate(${x}px, ${y}px)`;
-      });
-
+      // Рух зіниці за дотиком
       document.addEventListener('touchmove', (e) => {
         const touch = e.touches[0];
-        const x = touch.clientX / window.innerWidth * 30 - 15;
-        const y = touch.clientY / window.innerHeight * 30 - 15;
+        const x = (touch.clientX / window.innerWidth) * 30 - 15;
+        const y = (touch.clientY / window.innerHeight) * 30 - 15;
         pupil.style.transform = `translate(${x}px, ${y}px)`;
       });
 
-      // після 5 секунд — скрімер
+      // Через 5 секунд – скрімер
       setTimeout(() => {
         face.style.display = 'none';
         eye.style.display = 'none';
@@ -110,7 +112,7 @@
         scare.classList.add('shake');
         document.body.style.background = 'red';
         scream.play().catch(() => {});
-        if (navigator.vibrate) navigator.vibrate([400, 150, 700]);
+        if (navigator.vibrate) navigator.vibrate([400, 200, 600]);
       }, 5000);
     }, { once: true });
   </script>
