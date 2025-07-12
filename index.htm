@@ -1,84 +1,58 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>😈</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: none;
-    }
-
-    img {
-      max-width: 100%;
-      max-height: 100%;
-      display: none;
-    }
-
-    #scare {
-      animation: shake 0.08s infinite;
-    }
-
-    @keyframes shake {
-      0% { transform: scale(1.03) rotate(1deg); }
-      50% { transform: scale(1.06) rotate(-1deg); }
-      100% { transform: scale(1.04) rotate(0.5deg); }
-    }
-
-    #overlay {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font: 700 28px/1.2 sans-serif;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 5;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>😈</title>
+<style>
+  html,body{
+    margin:0;padding:0;background:#000;height:100vh;overflow:hidden;
+    display:flex;justify-content:center;align-items:center;cursor:none}
+  .full{position:fixed;inset:0;width:100vw;height:100vh;
+        object-fit:cover;display:none}
+  #scare{animation:shake .08s infinite}
+  @keyframes shake{
+     0%{transform:scale(1.03) rotate(1deg)}
+    50%{transform:scale(1.06) rotate(-1deg)}
+   100%{transform:scale(1.04) rotate(.4deg)}
+  }
+</style>
 </head>
 <body>
-  <!-- Початковий клік для звуку -->
-  <div id="overlay">Торкнись, щоб почати...</div>
+  <!-- «приманка» -->
+  <img id="weird" class="full"
+       src="https://i.ibb.co/hK7gqV0/weird.png" alt="weird">
 
-  <!-- Крипова “приманка”-картинка -->
-  <img id="weird" src="https://i.ibb.co/hK7gqV0/weird.png" alt="Страх">
+  <!-- скрімер‑GIF -->
+  <img id="scare" class="full"
+       src="https://media.tenor.com/FlrQo24znqEAAAAM/no-sleep-scary.gif" alt="scare">
 
-  <!-- Скріммер-графіка -->
-  <img id="scare" src="https://media.tenor.com/FlrQo24znqEAAAAM/no-sleep-scary.gif" alt="Скріммер">
+  <!-- крик -->
+  <audio id="scream"
+         src="https://cdn.pixabay.com/audio/2022/03/09/audio_7d83d5bb69.mp3"
+         preload="auto"></audio>
 
-  <!-- Страшний звук -->
-  <audio id="scream" src="https://cdn.pixabay.com/audio/2022/03/09/audio_7d83d5bb69.mp3" preload="auto"></audio>
+<script>
+  const weird = document.getElementById('weird');
+  const scare = document.getElementById('scare');
+  const scream= document.getElementById('scream');
 
-  <script>
-    const overlay = document.getElementById('overlay');
-    const weird = document.getElementById('weird');
-    const scare = document.getElementById('scare');
-    const scream = document.getElementById('scream');
+  // 3 с — «дивна» картинка
+  setTimeout(()=>{
+    weird.style.display='block';
 
-    overlay.addEventListener('click', () => {
-      overlay.style.display = 'none'; // прибираємо заставку
-      setTimeout(() => {
-        weird.style.display = 'block'; // дивна картинка
+    // +1 с — скрімер
+    setTimeout(()=>{
+      weird.style.display='none';
+      scare.style.display='block';
+      document.body.style.background='red';
+      scream.play().catch(()=>{});           // може заблокуватись на моб.
+      if(navigator.vibrate){navigator.vibrate([400,150,700]);}
+    },1000);
 
-        setTimeout(() => {
-          weird.style.display = 'none';
-          scare.style.display = 'block';
-          document.body.style.background = 'red';
-          scream.play().catch(() => {});
-          if (navigator.vibrate) navigator.vibrate([400, 150, 700]);
-        }, 1000); // через 1 сек — скрімер
+  },3000);
 
-      }, 3000); // через 3 секунди — дивна картинка
-    }, { once: true });
-  </script>
+  /* Якщо автозвук заблоковано, перший тап увімкне scream */
+  document.addEventListener('click',()=>scream.play(),{once:true});
+</script>
 </body>
 </html>
