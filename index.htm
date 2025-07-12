@@ -1,58 +1,92 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<title>😈</title>
-<style>
-  html,body{
-    margin:0;padding:0;background:#000;height:100vh;overflow:hidden;
-    display:flex;justify-content:center;align-items:center;cursor:none}
-  .full{position:fixed;inset:0;width:100vw;height:100vh;
-        object-fit:cover;display:none}
-  #scare{animation:shake .08s infinite}
-  @keyframes shake{
-     0%{transform:scale(1.03) rotate(1deg)}
-    50%{transform:scale(1.06) rotate(-1deg)}
-   100%{transform:scale(1.04) rotate(.4deg)}
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>😈</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: none;
+    }
+
+    .full {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      display: none;
+    }
+
+    #scare {
+      animation: shake 0.08s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: scale(1.03) rotate(1deg); }
+      50% { transform: scale(1.06) rotate(-1deg); }
+      100% { transform: scale(1.04) rotate(0.5deg); }
+    }
+
+    #text-overlay {
+      position: fixed;
+      top: 30%;
+      width: 100%;
+      text-align: center;
+      font-size: 26px;
+      color: white;
+      font-family: 'Arial Black', sans-serif;
+      z-index: 10;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <!-- «приманка» -->
-  <img id="weird" class="full"
-       src="https://i.ibb.co/hK7gqV0/weird.png" alt="weird">
+  <!-- Дивна картинка -->
+  <img id="weird" class="full" src="https://i.ibb.co/hK7gqV0/weird.png" alt="Страх">
+  <!-- Скріммер -->
+  <img id="scare" class="full" src="https://media.tenor.com/FlrQo24znqEAAAAM/no-sleep-scary.gif" alt="Скрімер">
+  <!-- Звук -->
+  <audio id="scream" src="https://cdn.pixabay.com/audio/2022/03/09/audio_7d83d5bb69.mp3" preload="auto"></audio>
+  <!-- Текст поверх -->
+  <div id="text-overlay">Що це за символ?..</div>
 
-  <!-- скрімер‑GIF -->
-  <img id="scare" class="full"
-       src="https://media.tenor.com/FlrQo24znqEAAAAM/no-sleep-scary.gif" alt="scare">
+  <script>
+    const weird = document.getElementById('weird');
+    const scare = document.getElementById('scare');
+    const scream = document.getElementById('scream');
+    const textOverlay = document.getElementById('text-overlay');
 
-  <!-- крик -->
-  <audio id="scream"
-         src="https://cdn.pixabay.com/audio/2022/03/09/audio_7d83d5bb69.mp3"
-         preload="auto"></audio>
+    // Якщо звук заблокується — перший дотик його розблокує
+    document.addEventListener('click', () => {
+      scream.play().catch(() => {});
+    }, { once: true });
 
-<script>
-  const weird = document.getElementById('weird');
-  const scare = document.getElementById('scare');
-  const scream= document.getElementById('scream');
+    // Через 3 с — показати дивну картинку і текст
+    setTimeout(() => {
+      weird.style.display = 'block';
+      textOverlay.style.display = 'block';
 
-  // 3 с — «дивна» картинка
-  setTimeout(()=>{
-    weird.style.display='block';
+      // Через ще 1 с — скрімер
+      setTimeout(() => {
+        weird.style.display = 'none';
+        textOverlay.style.display = 'none';
+        scare.style.display = 'block';
+        document.body.style.background = 'red';
+        scream.play().catch(() => {});
+        if (navigator.vibrate) {
+          navigator.vibrate([400, 150, 700]);
+        }
+      }, 1000);
 
-    // +1 с — скрімер
-    setTimeout(()=>{
-      weird.style.display='none';
-      scare.style.display='block';
-      document.body.style.background='red';
-      scream.play().catch(()=>{});           // може заблокуватись на моб.
-      if(navigator.vibrate){navigator.vibrate([400,150,700]);}
-    },1000);
-
-  },3000);
-
-  /* Якщо автозвук заблоковано, перший тап увімкне scream */
-  document.addEventListener('click',()=>scream.play(),{once:true});
-</script>
+    }, 3000);
+  </script>
 </body>
 </html>
