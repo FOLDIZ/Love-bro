@@ -1,3 +1,86 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Твій вибір</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      background: black; color: white;
+      font-family: sans-serif;
+      height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+    }
+    .hidden { display: none; }
+    button {
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      margin: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    button:hover {
+      background: #ddd;
+    }
+    #final {
+      font-size: 28px;
+      color: red;
+      animation: flicker 1s infinite;
+    }
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="step1">
+    <h2>Куди ти підеш?</h2>
+    <button onclick="nextStep('step2')">Ліворуч</button>
+    <button onclick="nextStep('step2')">Праворуч</button>
+  </div>
+
+  <div id="step2" class="hidden">
+    <h2>Двері попереду. Ввійти чи повернутись?</h2>
+    <button onclick="nextStep('step3')">Ввійти</button>
+    <button onclick="nextStep('step3')">Повернутись</button>
+  </div>
+
+  <div id="step3" class="hidden">
+    <h2>Ти справді готовий?</h2>
+    <button onclick="nextStep('finalStep')">Так</button>
+    <button onclick="nextStep('finalStep')">Ні</button>
+  </div>
+
+  <div id="finalStep" class="hidden">
+    <p id="final">Ти зробив свій вибір, коли відкрив цей сайт...</p>
+    <audio id="boom" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3" preload="auto"></audio>
+    <script>
+      const sound = document.getElementById('boom');
+      setTimeout(() => {
+        sound.play().catch(()=>{});
+        document.body.style.background = 'red';
+        if (navigator.vibrate) navigator.vibrate([500, 300, 500]);
+      }, 2000);
+    </script>
+  </div>
+
+  <script>
+    function nextStep(id) {
+      document.querySelectorAll('div').forEach(el => el.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
+
 <div id="finalStep" class="hidden">
   <img id="scare" src="https://media.tenor.com/FlrQo24znqEAAAAM/no-sleep-scary.gif" alt="scare" style="display:none; position:fixed; inset:0; width:100vw; height:100vh; object-fit:cover; z-index:10;">
   <p id="finalText" style="display:none; position:fixed; bottom:10%; width:100%; text-align:center; color:red; font-size:28px; z-index:11; font-weight:bold;">Ти вже не можеш вийти...</p>
